@@ -67,6 +67,7 @@ import './index.css';
               }],
               xIsNext: true,
               stepNumber: 0,
+              //初期位置はなし
               positions: Array(1).fill(null),
           };
       }
@@ -78,6 +79,7 @@ import './index.css';
           });
       }
 
+      //iによって場所を計算する　三つの場合に分ける
       getPosition(i){
           if (i <= 2){
               return ([(i % 3 + 1), 1]);
@@ -94,7 +96,9 @@ import './index.css';
         const history = this.state.history.slice(0, this.state.stepNumber + 1);
         const current = history[history.length - 1];
         const squares = current.squares.slice();
+        //stepまで位置を全部保存する
         const collect_pos = this.state.positions.slice(0, this.state.stepNumber + 1);
+        //現在の座標位置
         const current_pos = this.getPosition(i);
         if (calculateWinner(squares) || squares[i]){
             return;
@@ -108,6 +112,7 @@ import './index.css';
             ]),
             xIsNext: !this.state.xIsNext,
             stepNumber: history.length,
+            //新座標を追加
             positions: collect_pos.concat([current_pos]),
         });
         
@@ -118,15 +123,18 @@ import './index.css';
         const history = this.state.history;
         const current = history[this.state.stepNumber];
         const winnner = calculateWinner(current.squares);
-        console.log(this.state.stepNumber);
+        const className = "button";
         const moves = history.map((step, move) => {
             const desc = move ?
-                "Go to move #" + move + " (" + this.state.positions[move] + ")":
+                "Go to move #" + move + " (" + this.state.positions[move] + ")"://座標位置をボタンに表示
                 "Go to game start!";
                 console.log(this.state.positions);
             return (
-                <li key={move}>
-                    <button onClick={() => this.jumpTo(move)}>{desc}</button>
+                <li key={move}> 
+                    {/*現在のボタンを太字にする*/}
+                    <button className = {this.state.stepNumber === move ? "button-change" : className} onClick={(e) => {
+                        this.jumpTo(move);
+                    }}>{desc}</button>
                 </li>
             );
         });
